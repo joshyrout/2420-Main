@@ -20,19 +20,15 @@ public class MainComparatorExample {
         for (int i = 0; i < student.length; i++) {
             System.out.println(student[i].toString());
         }
-        Selection.sort(student);
+        Selection.sort(student, new GradeComparator());
         System.out.println("Order of students after sorting by student grade is");
         for (int i = 0; i < student.length; i++) {
             System.out.println(student[i].toString());
         }
-        Arrays.sort(student, Student.BY_LESSON);
+        Arrays.sort(student, new NameComparator());
         System.out.println("Order of students after sorting by student name is");
         for (int i = 0; i < student.length; i++) {
             System.out.println(student[i].toString());
         }
     }
-
-
-
-
-    }
+}
