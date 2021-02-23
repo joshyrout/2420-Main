@@ -1,6 +1,7 @@
 package ceStackQueue;
 
 import edu.princeton.cs.algs4.Queue;
+import edu.princeton.cs.algs4.Stack;
 import edu.princeton.cs.algs4.StdOut;
 
 /**
@@ -24,7 +25,16 @@ public class StackQueue {
 	 * @return transformed input
 	 */
 	private static Iterable<Character> transformationA(Queue<Character> q) {
-		return null; // TODO
+		Queue<Character> newQueue = new Queue<>();
+		while(!q.isEmpty()){
+			Character n = q.dequeue();
+			if(Character.isLowerCase(n)){
+				newQueue.enqueue(n);
+			} else if(n.equals('1')){
+				newQueue.enqueue('i');
+			}
+		}
+		return newQueue;
 	}
 	
 
@@ -39,7 +49,26 @@ public class StackQueue {
 	 * @return transformed input
 	 */
 	private static Iterable<Character> transformationB(Queue<Character> q) {
-		return null; // TODO
+
+		Stack<Character> newStack = new Stack<>();
+		int size = q.size();
+		for(int i = 0; i< size; i++){
+			Character n = q.dequeue();
+			if (n.equals('/') || n.equals('\\')){
+				q.enqueue(n);
+				q.enqueue(n);
+				newStack.push(n);
+				newStack.push(n);
+			} else {
+				q.enqueue(n);
+				newStack.push(n);
+			}
+		}
+
+		while(!newStack.isEmpty()){
+			q.enqueue(newStack.pop());
+		}
+		return q;
 	}
 	
 	public static void main(String[] args) {

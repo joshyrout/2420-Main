@@ -1,5 +1,10 @@
 package ceLinked;
 
+import edu.princeton.cs.algs4.ResizingArrayStack;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
  * WordList is a singly-linked list of Strings.
  * It is designed as a practice opportunity to
@@ -7,10 +12,41 @@ package ceLinked;
  * 
  * @author ..........
  */
-public class WordList {
+public class WordList implements Iterable<String>  {
 	private Node head; // first node of the list or null
 	private Node tail; // last node of the list or null
 	private int n;     // number of words in the list
+
+	@Override
+	public Iterator<String> iterator() {
+		return new TestIterator(this);
+	}
+
+	private class TestIterator implements Iterator<String> {
+		private Node pointer;
+		private int count;
+
+		public TestIterator(WordList word) {
+			pointer = word.head;
+			count = 0;
+		}
+
+		public boolean hasNext() {
+			if(count < n){return true;}
+			return false;
+		}
+
+		public String next() {
+			String data = pointer.item;
+			pointer = pointer.next;
+			count++;
+			return data;
+		}
+
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+	}
 
 	/**
 	 * Node of LinkedList that stores the item and a
@@ -133,6 +169,8 @@ public class WordList {
 		}
 		return sb.toString();
 	}
+
+
 	
 	/* * * * * * * * Test Client * * * * * * */
 	public static void main(String[] args) {
@@ -174,6 +212,10 @@ public class WordList {
 		System.out.println();
 		System.out.println("list: " + list);
 		System.out.println("size: " + list.size());
+
+		for (String i : list){
+			System.out.print(i + " ");
+		}
 
 	}
 
