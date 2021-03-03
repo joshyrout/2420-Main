@@ -61,7 +61,6 @@ public class Student implements Comparable<Student> {
 
     private static class LessonComparator implements Comparator<Student>{
 
-
         @Override
         public int compare(Student s1, Student s2) {
 

@@ -118,7 +118,7 @@ public class WordList implements Iterable<String>  {
 				return -1;
 			}
 		}
-		return index; // TODO 3
+		return index;
 	}
 	
 	/** 
@@ -139,7 +139,7 @@ public class WordList implements Iterable<String>  {
 			}
 		}
 		System.out.println(item + " is included in the list");
-		return true; // TODO 4
+		return true;
 	}
 	
 	/**
@@ -177,7 +177,7 @@ public class WordList implements Iterable<String>  {
 		WordList list = new WordList();
 		System.out.println("size: " + list.size());
 		
-		// TODO 1
+
 		// Dynamically determine whether the list is empty. If so, print 
 		// 'The list is empty.' otherwise print 'The list is not empty.'
 
