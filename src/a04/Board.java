@@ -1,5 +1,7 @@
 package a04;
 
+import java.text.Format;
+
 public class Board {
 
     //use a heap to track the priority of each board. the priority is the Hamming number(future cost estimate) + the number of moves it has already taken(distance from start).
@@ -20,10 +22,10 @@ public class Board {
     // (where blocks[i][j] = block in row i, column j)
 
     int[] boardArray;
-
+    int N;
 
     public Board(int[][] blocks) {
-        int N = blocks.length;
+        N = blocks.length;
         int count = N * N;
         boardArray = new int[count];
         for(int i = 0; i < count; i++){
@@ -33,7 +35,7 @@ public class Board {
 
     // board size N
     public int size(){
-        return boardArray.length;
+        return N;
     }
 
     // number of blocks out of place
@@ -72,11 +74,16 @@ public class Board {
 
     // string representation of this board (in the output format specified below)
     public String toString(){
-        return "";
+        String string = String.format("%2d%2d%2d\n%2d%2d%2d\n%2d%2d%2d",boardArray[0]);
+        return string;
     }
 
     // unit tests (not graded)
     public static void main(String[] args){
+
+        int[][] inputArray = {{0,1,2},{3,4,5},{6,7,8}};
+        Board initialBoard = new Board(inputArray);
+        System.out.println(initialBoard);
 
     }
 }
