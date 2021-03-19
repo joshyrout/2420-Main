@@ -3,10 +3,22 @@ package a03;
 import java.util.Arrays;
 import java.util.Comparator;
 
+/**
+ * This class creates an binary search that allows you to look for the first and last instance of a key in an array.
+ *
+ * @author Huakang Zhou, Joshua Routledge
+ * @version 1.0
+ */
 public class BinarySearchDeluxe {
 
 
-    // Return the index of the first key in a[] that equals the search key, or -1 if no such key.
+    /**
+     * This uses a binary search to find the first instance of a key in a sorted array.
+     * @param a is the array to search through
+     * @param key is the key you are looking for
+     * @param comparator is the comparator that was used to sort the array
+     * @return the index of the first instance of the key. If the key is not found returns -1
+     */
     public static <Key> int firstIndexOf(Key[] a, Key key, Comparator<Key> comparator){
 
         int min = 0;
@@ -32,7 +44,13 @@ public class BinarySearchDeluxe {
         return -1;
     }
 
-    // Return the index of the last key in a[] that equals the search key, or -1 if no such key.
+    /**
+     * This uses a binary search to find the last instance of a key in a sorted array.
+     * @param a is the array to search through
+     * @param key is the key you are looking for
+     * @param comparator is the comparator that was used to sort the array
+     * @return the index of the last instance of the key. If the key is not found returns -1
+     */
     public static <Key> int lastIndexOf(Key[] a, Key key, Comparator<Key> comparator){
         int min = 0;
         int max = a.length - 1;
@@ -58,6 +76,9 @@ public class BinarySearchDeluxe {
         return -1;
     }
 
+    /**
+     * Main class only used for testing purposes.
+     */
     public static void main(String[] args) {
 //        Term testTerm = new Term("this", 20);
         Term[] termArray = {new Term("c1", 1.4),
