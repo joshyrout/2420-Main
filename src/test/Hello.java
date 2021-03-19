@@ -4,7 +4,7 @@ public class Hello {
 
     public static void main(String[] args) {
 
-        int N = 3;
+        int N = 10;
         int count = N * N;
         for(int i = 0; i < count; i++){
             int inner = i / N;
