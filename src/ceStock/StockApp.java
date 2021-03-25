@@ -24,8 +24,6 @@ public class StockApp {
                 while ((line = br.readLine()) != null) {
                     String[] currentLine = line.split(csvSplitBy);
                     try{
-//                        String dateString = currentLine[keyField];
-//                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                         java.util.Date date = stringToDate(currentLine[keyField], "yyyy-MM-dd");
                         Double valDouble = Double.parseDouble(currentLine[valField]);
                         st.put(date, valDouble);
