@@ -2,6 +2,7 @@ package a05;
 
 
 import edu.princeton.cs.algs4.*;
+import java.math.BigDecimal;
 
 public class KdTreeST<Value> {
     private Node root;
@@ -46,6 +47,44 @@ public class KdTreeST<Value> {
             else                   compareResult = (int) Math.ceil(compare2 - compare1);
 
             return compareResult;
+        }
+
+        public int trueCompare(Point2D p){
+            int compare1;
+            int compare2;
+
+            BigDecimal bd1;
+            BigDecimal bd2;
+            if(this.layer % 2 == 0){
+                bd1 = BigDecimal.valueOf(this.p.x());
+                bd2 = BigDecimal.valueOf(p.x());
+            } else {
+                bd1 = BigDecimal.valueOf(this.p.y());
+                bd2 = BigDecimal.valueOf(p.y());
+            }
+
+            bd1 = bd1.movePointRight(6);
+            bd2 = bd2.movePointRight(6);
+
+            compare1 = bd1.intValue();
+            compare2 = bd2.intValue();
+            return (compare1 - compare2);
+        }
+
+        public double distance(Point2D p){
+            //TODO : this is where i was
+            double compare1;
+            double compare2;
+
+            if(this.layer % 2 == 0){
+                compare1 = this.p.x();
+                compare2 = p.x();
+            } else {
+                compare1 = this.p.y();
+                compare2 = p.y();
+            }
+
+            return (compare1 - compare2);
         }
 
         public void updateLayer(){
@@ -114,17 +153,6 @@ public class KdTreeST<Value> {
         return parent;
     }
 
-    //TODO remove backup below
-//    private Node put(Node parent, Node child){
-//        if (parent == null) return child;
-//        int compare = parent.compareTo(child);
-//        child.updateLayer();
-//        child.updateRect(compare, parent.p);
-//        if (compare < 0) parent.lb  = put(parent.lb,  child);
-//        else             parent.rt = put(parent.rt, child);
-//        parent.size = size(parent.lb) + size(parent.rt) + 1;
-//        return parent;
-//    }
 
     // TODO: value associated with point p
     public Value get(Point2D p){
@@ -180,28 +208,35 @@ public class KdTreeST<Value> {
 
     // TODO: a nearest neighbor to point p; null if the symbol table is empty
     public Point2D nearest(Point2D p){
-//        if(p == null) throw new NullPointerException("input can't be null");
-//        Iterable<Point2D> allKeys = redBlackBST.keys();
-//        Point2D nearestPoint = null;
-//        double currentDistance = 0;
-//
-//        for(Point2D p2: allKeys){
-//            double distance = p.distanceSquaredTo(p2);
-//            if(nearestPoint == null){
-//                nearestPoint = p2;
-//                currentDistance = distance;
-//            } else if (distance < currentDistance){
-//                nearestPoint = p2;
-//                currentDistance = distance;
-//            }
-//        }
-//        return nearestPoint;
-        return null;// TODO remove
+        if(p == null) throw new NullPointerException("input can't be null");
+        if(isEmpty()) return null;
+        Point2D nearestPoint = nearest(root, p, root).p;
+        return nearestPoint;
     }
+
+    private Node nearest(Node node, Point2D p, Node nearest){
+        if(nearest == null) throw new NullPointerException("The nodes cant be null");
+        if(node == null) return nearest;
+        double currentDistance = nearest.distance(p);
+        System.out.println("current distance: " + Math.abs(currentDistance) + " node distance: " + Math.abs(node.distance(p)));
+        if(Math.abs(node.distance(p)) > Math.abs(currentDistance)) return nearest;
+        if(Math.abs(node.p.distanceSquaredTo(p)) < Math.abs(nearest.p.distanceSquaredTo(p))) nearest = node;
+
+        if(currentDistance >= 0){
+            nearest = nearest(node.rt, p, nearest);
+            nearest = nearest(node.lb, p, nearest);
+        } else {
+            nearest = nearest(node.lb, p, nearest);
+            nearest = nearest(node.rt, p, nearest);
+        }
+
+        return nearest;
+    }
+
 
     // unit testing of the methods (not graded)
     public static void main(String[] args){
-        String filename = "C:\\Users\\Josh\\IdeaProjects\\2420_GettingStarted\\resources\\a05\\input1k.txt";
+        String filename = "resources/a05/input1K.txt";
         In in = new In(filename);
 //        RectHV rect = new RectHV(0.25, 0.25, 0.75, 0.75);
         RectHV rect = new RectHV(0.75, 0.75, 1, 1);
@@ -228,7 +263,7 @@ public class KdTreeST<Value> {
             count ++;
         }
         System.out.println("Number of points in rect: " + count);
-//        System.out.println("Nearest point: " + kdTree.nearest(new Point2D(0.5,0.5)));
+        System.out.println("Nearest point: " + kdTree.nearest(new Point2D(0,0)));
     }
 
 }
