@@ -82,32 +82,32 @@ public class PointST<Value>{
 
     // unit testing of the methods (not graded)
     public static void main(String[] args){
-//        String filename = "C:\\Users\\Josh\\IdeaProjects\\2420_GettingStarted\\src\\a05\\input100K.txt";
-//        In in = new In(filename);
-//        RectHV rect = new RectHV(0.25, 0.25, 0.75, 0.75);
-//
-//        PointST<Integer> brute = new PointST<Integer>();
-//        for (int i = 0; !in.isEmpty(); i++) {
-//            double x = in.readDouble();
-//            double y = in.readDouble();
-//            Point2D p = new Point2D(x, y);
-//            brute.put(p, i);
-//        }
-//
-//        System.out.println("Brute size: " + brute.size());
-//        System.out.println("Is brute empty: " + brute.isEmpty());
-//
-//        int count = 0;
-//        for(Point2D p: brute.points()){
-//            count ++;
-//        }
-//        System.out.println("Number of points: " + count);
-//
-//        count = 0;
-//        for(Point2D p: brute.range(rect)){
-//            count ++;
-//        }
-//        System.out.println("Number of points in rect: " + count);
-//        System.out.println("Nearest point: " + brute.nearest(new Point2D(0.5,0.5)));
+        String filename = "C:\\Users\\Josh\\IdeaProjects\\2420_GettingStarted\\src\\a05\\input100K.txt";
+        In in = new In(filename);
+        RectHV rect = new RectHV(0.25, 0.25, 0.75, 0.75);
+
+        PointST<Integer> brute = new PointST<Integer>();
+        for (int i = 0; !in.isEmpty(); i++) {
+            double x = in.readDouble();
+            double y = in.readDouble();
+            Point2D p = new Point2D(x, y);
+            brute.put(p, i);
+        }
+
+        System.out.println("Brute size: " + brute.size());
+        System.out.println("Is brute empty: " + brute.isEmpty());
+
+        int count = 0;
+        for(Point2D p: brute.points()){
+            count ++;
+        }
+        System.out.println("Number of points: " + count);
+
+        count = 0;
+        for(Point2D p: brute.range(rect)){
+            count ++;
+        }
+        System.out.println("Number of points in rect: " + count);
+        System.out.println("Nearest point: " + brute.nearest(new Point2D(0.5,0.5)));
     }
 }
