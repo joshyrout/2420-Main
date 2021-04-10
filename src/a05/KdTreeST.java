@@ -3,11 +3,9 @@ package a05;
 
 import edu.princeton.cs.algs4.*;
 import java.math.BigDecimal;
-import java.security.cert.PolicyNode;
 
 public class KdTreeST<Value> {
     private Node root;
-    private int size;
 
     private class Node implements Comparable<Node> {
         private Point2D p;      // the point
@@ -15,15 +13,15 @@ public class KdTreeST<Value> {
         private RectHV rect;    // the axis-aligned rectangle corresponding to this node
         private Node lb;        // the left/bottom subtree
         private Node rt;        // the right/top subtree
-        public int layer;       // current layer of the tree
+        public boolean vertical;
         public int size;
 
-        public Node(Point2D p, Value value, RectHV rect, int layer, int size){
+        public Node(Point2D p, Value value, RectHV rect, int size, boolean vertical){
             this.p = p;
             this.value = value;
             this.rect = rect;
-            this.layer = layer;
             this.size = size;
+            this.vertical = vertical;
         }
 
         @Override
@@ -35,7 +33,7 @@ public class KdTreeST<Value> {
             Double compare1;
             Double compare2;
 
-            if(this.layer % 2 == 0){
+            if(vertical){
                 compare1 = this.p.x();
                 compare2 = p.x();
             } else {
@@ -50,7 +48,7 @@ public class KdTreeST<Value> {
             double compare1;
             double compare2;
 
-            if(this.layer % 2 == 0){
+            if(vertical){
                 compare1 = this.p.x();
                 compare2 = p.x();
             } else {
@@ -65,7 +63,7 @@ public class KdTreeST<Value> {
             BigDecimal compare1;
             BigDecimal compare2;
 
-            if(this.layer % 2 == 0){
+            if(vertical){
                 compare1 = BigDecimal.valueOf(this.p.x());
                 compare2 = BigDecimal.valueOf(p.x());
             } else {
@@ -78,9 +76,6 @@ public class KdTreeST<Value> {
             return compare1.doubleValue();
         }
 
-        public void updateLayer(){
-            layer++;
-        }
 
         public void updateRect(int compare, Point2D p){
             //TODO: add rect update functionality
@@ -89,7 +84,7 @@ public class KdTreeST<Value> {
             double maxX = this.rect.xmax();
             double maxY = this.rect.ymax();
 
-            if (this.layer % 2 != 0){
+            if (vertical){
                 if (compare > 0) maxX = p.x();
                 else             minX = p.x();
             } else {
