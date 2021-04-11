@@ -24,6 +24,10 @@ public class KdTreeST<Value> {
             this.vertical = vertical;
         }
 
+        public void updateLayer(){
+            vertical = !vertical;
+        }
+
         @Override
         public int compareTo(Node o) {
             return compareTo(o.p);
@@ -84,14 +88,21 @@ public class KdTreeST<Value> {
             double maxX = this.rect.xmax();
             double maxY = this.rect.ymax();
 
-            if (vertical){
-                if (compare > 0) maxX = p.x();
+            if (!vertical){
+                if (compare < 0) maxX = p.x();
                 else             minX = p.x();
             } else {
-                if (compare > 0) maxY = p.y();
+                if (compare < 0) maxY = p.y();
                 else             minY = p.y();
             }
             this.rect = new RectHV(minX, minY, maxX, maxY);
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Point: " + p + "  Value: " + value + "  Rect: " + rect + "  Vertical: " + vertical + "  size: " + size);
+            return sb.toString();
         }
     }
 
@@ -115,32 +126,29 @@ public class KdTreeST<Value> {
         return node.size;
     }
 
-    // TODO: associate the value val with point p
-    // TODO: may need to check if already contains the point
+    // associate the value val with point p
     public void put(Point2D p, Value val){
         if(p == null || val == null) throw new NullPointerException("inputs can't be null");
         RectHV rect = new RectHV(Double.NEGATIVE_INFINITY,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,Double.POSITIVE_INFINITY);
-        Node child = new Node(p, val, rect, 1, 1);
+        Node child = new Node(p, val, rect, 1, true);
         root = put(root, child);
     }
 
     private Node put(Node parent, Node child){
         if (parent == null) {
-//            StdOut.println("child created: " + child.p + "  layer: "+ child.layer + "  rect: " + child.rect); TODO: remove
             return child;
         }
-        int compare = child.compareTo(parent);
-//        System.out.println("Parent: " + parent.p + "  Child: " + child.p + "  Compare: " + compare + "  Layer: " + parent.layer); TODO: remove
         child.updateLayer();
+        int compare = parent.compareTo(child);
         child.updateRect(compare, parent.p);
+        if(parent.p.compareTo(child.p) == 0) {parent.value = child.value; return parent;}
         if (compare < 0) parent.lb  = put(parent.lb,  child);
-        else if (compare > 0) parent.rt = put(parent.rt, child);
-        else if(child.p.compareTo(parent.p) == 0) parent.value = child.value;
+        else if (compare >= 0) parent.rt = put(parent.rt, child);
         parent.size = size(parent.lb) + size(parent.rt) + 1;
         return parent;
     }
 
-    // TODO: value associated with point p
+    // value associated with point p
     public Value get(Point2D p){
         if(p == null) throw new NullPointerException("input can't be null");
         return get(root, p);
@@ -148,10 +156,10 @@ public class KdTreeST<Value> {
 
     private Value get(Node parent, Point2D p) {
         if (parent == null) return null;
-        int compare = parent.p.compareTo(p);
-        if      (compare < 0) return get(parent.lb, p);
-        else if (compare < 0) return get(parent.rt, p);
-        else return parent.value;
+        if(parent.p.compareTo(p) == 0) return parent.value;
+        int compare = parent.compareTo(p);
+        if (compare < 0) return get(parent.lb, p);
+        else             return get(parent.rt, p);
     }
 
     // does the symbol table contain point p?
@@ -161,7 +169,7 @@ public class KdTreeST<Value> {
         return (value != null);
     }
 
-    // TODO: all points in the symbol table
+    // all points in the symbol table
     public Iterable<Point2D> points(){
         Queue<Point2D> queue = new Queue<Point2D>();
         points(root, queue);
@@ -175,7 +183,7 @@ public class KdTreeST<Value> {
         points(parent.rt, queue);
     }
 
-    // TODO: all points that are inside the rectangle
+    // all points that are inside the rectangle
     public Iterable<Point2D> range(RectHV rect){
         Queue<Point2D> queue = new Queue<Point2D>();
         range(root, queue, rect);
@@ -219,7 +227,7 @@ public class KdTreeST<Value> {
 
     // unit testing of the methods (not graded)
     public static void main(String[] args){
-        String filename = "resources/a05/input100k.txt";
+        String filename = "resources/a05/input10.txt";
         In in = new In(filename);
 //        RectHV rect = new RectHV(0.25, 0.25, 0.75, 0.75);
         RectHV rect = new RectHV(0.75, 0.75, 1, 1);
@@ -252,13 +260,13 @@ public class KdTreeST<Value> {
         }
 
         System.out.println("kdTree contains check: " + count);
-
         count = 0;
         for(Point2D p: kdTree.range(rect)){
             count ++;
         }
         System.out.println("Number of points in rect: " + count);
         System.out.println("Nearest point: " + kdTree.nearest(new Point2D(0,0)));
+
     }
 
 }

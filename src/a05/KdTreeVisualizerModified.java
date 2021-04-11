@@ -171,7 +171,6 @@ public class KdTreeVisualizerModified {
 
         // try to place each point
         while (current < size) {
-            System.out.println("hit");
             // get current parent (but don't dequeue yet)
             PointE parent = queue.peek();
 
