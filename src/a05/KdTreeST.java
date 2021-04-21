@@ -1,12 +1,25 @@
 package a05;
 
+import edu.princeton.cs.algs4.Point2D;
+import edu.princeton.cs.algs4.Queue;
+import edu.princeton.cs.algs4.RectHV;
 
-import edu.princeton.cs.algs4.*;
-import java.math.BigDecimal;
+/**
+ * The KdTreeST class is a symbol table used to store two dimensional points allowing
+ * them to be can be queried efficiently. The two queries this class enables are searching for
+ * points within a specified rectangle and to find the point nearest to a specified point.
+ *
+ * @param <Value> The value type associated with a key to create a key-value pair.
+ * @author Jedidiah Schmith, Josh Routledge
+ * @version 1.0
+ */
 
 public class KdTreeST<Value> {
     private Node root;
 
+    /**
+     * This class is used to hold all the information needed by the symbol table.
+     */
     private class Node implements Comparable<Node> {
         private Point2D p;      // the point
         private Value value;    // the symbol table maps the point to this value
@@ -16,6 +29,14 @@ public class KdTreeST<Value> {
         public boolean vertical;
         public int size;
 
+        /**
+         * This is the constructor for the node class.
+         * @param p Point2D
+         * @param value Value
+         * @param rect RectHV
+         * @param size int
+         * @param vertical boolean
+         */
         public Node(Point2D p, Value value, RectHV rect, int size, boolean vertical){
             this.p = p;
             this.value = value;
@@ -24,30 +45,41 @@ public class KdTreeST<Value> {
             this.vertical = vertical;
         }
 
+        /**
+         * This inverts the nodes layer.
+         */
         public void updateLayer(){
             vertical = !vertical;
         }
 
+        /**
+         *  This method compares this node to another node. Only compares either the x coordinates or the
+         *  y coordinates depending on whether the node is vertical or horizontal.
+         * @param o The other Node you want to compare against.
+         * @return int Returns 1 other node is smaller, returns 0 if the nodes are equal, and returns -1 if its larger.
+         */
         @Override
         public int compareTo(Node o) {
             return compareTo(o.p);
         }
 
+        /**
+         *  This method compares this node's point against another point. Only compares either the x coordinates or the
+         *  y coordinates depending on whether the node is vertical or horizontal.
+         * @param p The Point2D you want to compare against.
+         * @return int Returns 1 point is smaller, returns 0 if they are equal, and returns -1 if its larger.
+         */
         public int compareTo(Point2D p) {
-            Double compare1;
-            Double compare2;
-
-            if(vertical){
-                compare1 = this.p.x();
-                compare2 = p.x();
-            } else {
-                compare1 = this.p.y();
-                compare2 = p.y();
-            }
-
-            return Double.compare(compare2, compare1);
+            Double compare = distance(p);
+            return Double.compare(compare, 0);
         }
 
+        /**
+         *  This method compares the distance between a node's point and another point. Only compares either the x
+         *  coordinates or the y coordinates depending on whether the node is vertical or horizontal.
+         * @param p The Point2D you want to compare against.
+         * @return double The distance between the points x or y values.
+         */
         public double distance(Point2D p){
             double compare1;
             double compare2;
@@ -59,30 +91,15 @@ public class KdTreeST<Value> {
                 compare1 = this.p.y();
                 compare2 = p.y();
             }
-
             return compare2 - compare1;
         }
 
-        public double distanceBD(Point2D p){ //TODO: remove
-            BigDecimal compare1;
-            BigDecimal compare2;
-
-            if(vertical){
-                compare1 = BigDecimal.valueOf(this.p.x());
-                compare2 = BigDecimal.valueOf(p.x());
-            } else {
-                compare1 = BigDecimal.valueOf(this.p.y());
-                compare2 = BigDecimal.valueOf(p.y());
-            }
-
-            compare1 = compare2.subtract(compare1);
-
-            return compare1.doubleValue();
-        }
-
-
+        /**
+         * Updates a nodes rectangle.
+         * @param compare The compare result from this node and its parent.
+         * @param p The point of its parent.
+         */
         public void updateRect(int compare, Point2D p){
-            //TODO: add rect update functionality
             double minX = this.rect.xmin();
             double minY = this.rect.ymin();
             double maxX = this.rect.xmax();
@@ -98,35 +115,62 @@ public class KdTreeST<Value> {
             this.rect = new RectHV(minX, minY, maxX, maxY);
         }
 
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Point: " + p + "  Value: " + value + "  Rect: " + rect + "  Vertical: " + vertical + "  size: " + size);
-            return sb.toString();
+        /**
+         * This returns the distance from a given point's x or y value to the closest side of the nodes rectangle
+         * depending on if the node is vertical or horizontal.
+         * @param p Point2D The point being compared against.
+         * @return double The distance.
+         */
+        public double distanceToRect(Point2D p) {
+            double compare = 0.0;
+            if(vertical){
+                if      (p.x() < rect.xmin()) compare = p.x() - rect.xmin();
+                else if (p.x() > rect.xmax()) compare = p.x() - rect.xmax();
+            } else {
+                if      (p.y() < rect.ymin()) compare = p.y() - rect.ymin();
+                else if (p.y() > rect.ymax()) compare = p.y() - rect.ymax();
+            }
+            return Math.abs(compare);
         }
     }
 
 
-    // construct an empty symbol table of points
+    /**
+     * Constructs an empty symbol table of points.
+     */
     public KdTreeST(){
     }
 
-    // is the symbol table empty?
+    /**
+     * Checks the if the symbol table is empty.
+     * @return true if empty else returns false.
+     */
     public boolean isEmpty(){
         return (root == null);
     }
 
-    // number of points
+    /**
+     * Returns the number of entries in the symbol table.
+     * @return int The size.
+     */
     public int size(){
         return size(root);
     }
 
+    /**
+     * This method returns the current number of entries within a nodes subtrees plus itself.
+     * @return int The size.
+     */
     private int size(Node node){
         if(node == null) return 0;
         return node.size;
     }
 
-    // associate the value val with point p
+    /**
+     * This runs a recursive method to add an new node into the symbol table.
+     * @param p Point2D A point used as the key for the node.
+     * @param val Value A Value used as the value for the node.
+     */
     public void put(Point2D p, Value val){
         if(p == null || val == null) throw new NullPointerException("inputs can't be null");
         RectHV rect = new RectHV(Double.NEGATIVE_INFINITY,Double.NEGATIVE_INFINITY,Double.POSITIVE_INFINITY,Double.POSITIVE_INFINITY);
@@ -148,7 +192,11 @@ public class KdTreeST<Value> {
         return parent;
     }
 
-    // value associated with point p
+    /**
+     * This runs a recursive method to get the value associated with the given key from the symbol table.
+     * @param p Point2D The point you are looking for a value for.
+     * @return Value This returns the value associated with point p, if the point is not found, it will returns null.
+     */
     public Value get(Point2D p){
         if(p == null) throw new NullPointerException("input can't be null");
         return get(root, p);
@@ -162,14 +210,21 @@ public class KdTreeST<Value> {
         else             return get(parent.rt, p);
     }
 
-    // does the symbol table contain point p?
+    /**
+     * Checks for a given point in the symbol table.
+     * @param p Point2D the point you are checking for.
+     * @return boolean returns true if the point is found else returns false.
+     */
     public boolean contains(Point2D p){
         if(p == null) throw new NullPointerException("input can't be null");
         Value value = get(p);
         return (value != null);
     }
 
-    // all points in the symbol table
+    /**
+     * Returns all points in the symbol table.
+     * @return Iterable<Point2D> An iterable of points.
+     */
     public Iterable<Point2D> points(){
         Queue<Point2D> queue = new Queue<Point2D>();
         points(root, queue);
@@ -183,7 +238,11 @@ public class KdTreeST<Value> {
         points(parent.rt, queue);
     }
 
-    // all points that are inside the rectangle
+    /**
+     * Returns all points in the symbol table that fall within a given rectangle.
+     * @param rect The given rectangle.
+     * @return Iterable<Point2D> An iterable of points.
+     */
     public Iterable<Point2D> range(RectHV rect){
         Queue<Point2D> queue = new Queue<Point2D>();
         range(root, queue, rect);
@@ -198,7 +257,11 @@ public class KdTreeST<Value> {
         range(parent.rt, queue, rect);
     }
 
-    // a nearest neighbor to point p; null if the symbol table is empty
+    /**
+     * This returns the nearest neighbor to point p.
+     * @param p Point2D The point being compared against.
+     * @return Point2D The nearest neighbor. Will return null if the table is empty.
+     */
     public Point2D nearest(Point2D p){
         if(p == null) throw new NullPointerException("input can't be null");
         if(isEmpty()) return null;
@@ -209,12 +272,11 @@ public class KdTreeST<Value> {
     private Node nearest(Node node, Point2D p, Node nearest){
         if(nearest == null) throw new NullPointerException("The nodes cant be null");
         if(node == null) return nearest;
-        double currentDistance = nearest.distance(p);
-//        System.out.println("current distance: " + Math.abs(currentDistance) + " node distance: " + Math.abs(node.distance(p))); //TODO: remove
-        if(!node.rect.contains(p) && Math.abs(node.distance(p)) > Math.abs(currentDistance)) return nearest;
+
+        if(node.distanceToRect(p) > nearest.p.distanceTo(p)) return nearest;
         if(Math.abs(node.p.distanceSquaredTo(p)) < Math.abs(nearest.p.distanceSquaredTo(p))) nearest = node;
 
-        if(currentDistance >= 0){
+        if(nearest.distance(p) >= 0){
             nearest = nearest(node.rt, p, nearest);
             nearest = nearest(node.lb, p, nearest);
         } else {
@@ -224,49 +286,48 @@ public class KdTreeST<Value> {
         return nearest;
     }
 
-
-    // unit testing of the methods (not graded)
+    /**
+     * The Main method was only used for testing this class.
+     */
     public static void main(String[] args){
-        String filename = "resources/a05/input10.txt";
-        In in = new In(filename);
-//        RectHV rect = new RectHV(0.25, 0.25, 0.75, 0.75);
-        RectHV rect = new RectHV(0.75, 0.75, 1, 1);
-
-        KdTreeST<Integer> kdTree = new KdTreeST<Integer>();
-        System.out.println("Is kdTree empty: " + kdTree.isEmpty());
-        for (int i = 0; !in.isEmpty(); i++) {
-            double x = in.readDouble();
-            double y = in.readDouble();
-            Point2D p = new Point2D(x, y);
-            kdTree.put(p, i);
-        }
-
-        System.out.println("kdTree size: " + kdTree.size());
-        System.out.println("Is kdTree empty: " + kdTree.isEmpty());
-
-        int count = 0;
-        for(Point2D p: kdTree.points()){
-            count ++;
-        }
-        System.out.println("Number of points: " + count);
-
-        count = 0;
-        in = new In(filename);
-        for (int i = 0; !in.isEmpty(); i++) {
-            double x = in.readDouble();
-            double y = in.readDouble();
-            Point2D p = new Point2D(x, y);
-            if(kdTree.contains(p)) count++;
-        }
-
-        System.out.println("kdTree contains check: " + count);
-        count = 0;
-        for(Point2D p: kdTree.range(rect)){
-            count ++;
-        }
-        System.out.println("Number of points in rect: " + count);
-        System.out.println("Nearest point: " + kdTree.nearest(new Point2D(0,0)));
-
+//        String filename = "resources/a05/input10.txt";
+//        In in = new In(filename);
+//        RectHV rect = new RectHV(0.75, 0.75, 1, 1);
+//
+//        KdTreeST<Integer> kdTree = new KdTreeST<Integer>();
+//        System.out.println("Is kdTree empty: " + kdTree.isEmpty());
+//        for (int i = 0; !in.isEmpty(); i++) {
+//            double x = in.readDouble();
+//            double y = in.readDouble();
+//            Point2D p = new Point2D(x, y);
+//            kdTree.put(p, i);
+//        }
+//
+//        System.out.println("kdTree size: " + kdTree.size());
+//        System.out.println("Is kdTree empty: " + kdTree.isEmpty());
+//
+//        int count = 0;
+//        for(Point2D p: kdTree.points()){
+//            count ++;
+//        }
+//        System.out.println("Number of points: " + count);
+//
+//        count = 0;
+//        in = new In(filename);
+//        for (int i = 0; !in.isEmpty(); i++) {
+//            double x = in.readDouble();
+//            double y = in.readDouble();
+//            Point2D p = new Point2D(x, y);
+//            if(kdTree.contains(p)) count++;
+//        }
+//
+//        System.out.println("kdTree contains check: " + count);
+//        count = 0;
+//        for(Point2D p: kdTree.range(rect)){
+//            count ++;
+//        }
+//        System.out.println("Number of points in rect: " + count);
+//        System.out.println("Nearest point: " + kdTree.nearest(new Point2D(0,0)));
     }
 
 }

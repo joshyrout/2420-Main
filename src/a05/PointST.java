@@ -2,7 +2,6 @@ package a05;
 
 import edu.princeton.cs.algs4.*;
 
-
 public class PointST<Value>{
 
     private RedBlackBST<Point2D, Value> redBlackBST;
@@ -82,7 +81,7 @@ public class PointST<Value>{
 
     // unit testing of the methods (not graded)
     public static void main(String[] args){
-        String filename = "C:\\Users\\Josh\\IdeaProjects\\2420_GettingStarted\\src\\a05\\input100K.txt";
+        String filename = "resources/a05/input100k.txt";
         In in = new In(filename);
         RectHV rect = new RectHV(0.25, 0.25, 0.75, 0.75);
 
