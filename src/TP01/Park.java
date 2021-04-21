@@ -1,6 +1,11 @@
 package TP01;
 
+import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Point2D;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class Park {
 
@@ -30,5 +35,14 @@ public class Park {
 
     public Point2D getLocation() {
         return location;
+    }
+
+    @Override
+    public String toString() {
+        return "Name: " + this.name + " ID: " + this.ID + " type: " + this.type + " location: " + this.location;
+    }
+
+    public static void main(String[] args) {
+
     }
 }
