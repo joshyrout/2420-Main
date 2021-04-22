@@ -1,7 +1,5 @@
-Offshore Trap/Pot Waters Area,38.000000,-82.000000,
-Steller Sea Lion Protection Area,57.466667,-153.433334,
-Pacific Remote Islands Marine National Monument,16.736944,-169.523895,
-Papahanaumokuakea Marine National Monument,25.700001,-171.733337,
+Offshore Trap/Pot Waters Area,38.000000,-82.000000
+Steller Sea Lion Protection Area,57.466667,-153.433334
+Pacific Remote Islands Marine National Monument,16.736944,-169.523895
+Papahanaumokuakea Marine National Monument,25.700001,-171.733337
 Danville Conservation Area,38.865097,-91.504852
-
-
