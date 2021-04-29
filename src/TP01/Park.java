@@ -2,7 +2,7 @@ package TP01;
 
 import edu.princeton.cs.algs4.Point2D;
 
-public class Park  implements Comparable<Park> {
+public class Park{
 
     private String name;
     private int ID;
@@ -37,15 +37,4 @@ public class Park  implements Comparable<Park> {
         return "Name: " + this.name + " ID: " + this.ID + " type: " + this.type + " location: " + this.location;
     }
 
-    @Override
-    public int compareTo(Park o) {
-        double tx = this.getLocation().x();
-        double ty = this.getLocation().y();
-        double ox = o.getLocation().x();
-        double oy = o.getLocation().y();
-
-
-
-        return 0;
-    }
 }

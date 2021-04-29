@@ -11,14 +11,18 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class Scraper {
-    public static void main(String[] args) {
 
+    public Scraper(){
+
+    }
+
+    public void createFile(String url, String fileName){
         try {
-            Document doc = Jsoup.connect("https://www.latlong.net/category/national-parks-236-42.html").get();
+            Document doc = Jsoup.connect(url).get();
             Elements elementstr = doc.getElementsByTag("td");
             int count = 0;
             Element e1 = null, e2 = null, e3 = null;
-            File file = new File("src\\TP01\\NationalParks.txt");;
+            File file = new File(fileName);;
 
             if(!file.exists()){
                 file.createNewFile();
@@ -44,13 +48,20 @@ public class Scraper {
                     e3 = null;
                 }
             }
-
+            System.out.println("File Created");
             printWriter.flush();
             printWriter.close();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public static void main(String[] args) {
+        Scraper s = new Scraper();
+        String url = "https://www.latlong.net/category/national-parks-236-42.html";
+        String fileName = "resources\\TP01\\NationalParks.txt";
+
+        s.createFile(url, fileName);
     }
 }
